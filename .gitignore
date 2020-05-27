@@ -9,11 +9,15 @@ data/coco
 data/custom
 data/WheatDetection/images/
 data/WheatDetection/labels/
+data/WheatDetection/train.csv
+data/WheatDetection/train.txt
+data/WheatDetection/valid.txt
+data/WheatDetection/sample_submission.csv
 backup
 weights/*.weights
 weights/*.74
 
 __pycache__
 checkpoints
-data/samples/*.jpg
+data/samples/
 logs/*.v2
