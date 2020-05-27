@@ -16,7 +16,7 @@ data/WheatDetection/sample_submission.csv
 backup
 weights/*.weights
 weights/*.74
-
+.vscode/
 __pycache__
 checkpoints
 data/samples/
