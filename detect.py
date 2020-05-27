@@ -92,6 +92,7 @@ if __name__ == "__main__":
     cmap = plt.get_cmap("tab20b")
     colors = [cmap(i) for i in np.linspace(0, 1, 20)]
 
+    file_string = ""
     print("\nSaving images:")
     # Iterate through images and save plot of detections
     for img_i, (path, detections) in enumerate(zip(imgs, img_detections)):
@@ -144,7 +145,9 @@ if __name__ == "__main__":
         plt.close()
 
         out_string = filename + "," + out_string
-        file = open(f"output/{filename}.txt",'w')
-        file.write(out_string)
-        file.close()
+        file_string += out_string + "\n"
+    file = open(f"output/submission.txt",'w')
+    file.write(file_string)
+    file.close()
+    
         
