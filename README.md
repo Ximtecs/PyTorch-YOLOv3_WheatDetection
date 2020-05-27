@@ -1,11 +1,14 @@
 # PyTorch-YOLOv3
 A minimal PyTorch implementation of YOLOv3, with support for training, inference and evaluation.
 
+This is a fork of https://github.com/eriklindernoren/PyTorch-YOLOv3 for custom data set for the https://www.kaggle.com/c/global-wheat-detection kaggle competition.
+
 ## Installation
 ##### Clone and install requirements
     $ git clone https://github.com/eriklindernoren/PyTorch-YOLOv3
     $ cd PyTorch-YOLOv3/
-    $ sudo pip3 install -r requirements.txt
+    $ (sudo pip3 install -r requirements.txt)
+    $ conda install -c conda-forge --file requirements.txt
 
 ##### Download pretrained weights
     $ cd weights/
@@ -15,6 +18,20 @@ A minimal PyTorch implementation of YOLOv3, with support for training, inference
     $ cd data/
     $ bash get_coco_dataset.sh
     
+#### Download Global_Wheat_Competition
+    If you want to use the kaggle API you need to setup username and key.
+    This can be done by creating a json file in:    $Home/.kaggle/kaggle.json
+    Afterwards, run the comand:
+    $ chmod 600 $Home/.kagggle/kaggle.json
+    
+    Once the username and key is setup use the following command in the data/WheatDetection folder to download the dataset:
+
+    kaggle competitions download global-wheat-detection
+    rm global-wheat-detection.zip
+    mv train images
+    mkdir labels
+    python Yolo_setup.py
+
 ## Test
 Evaluates the model on COCO test.
 
