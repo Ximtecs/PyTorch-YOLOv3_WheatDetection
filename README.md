@@ -1,9 +1,9 @@
 # PyTorch-YOLOv3
 A minimal PyTorch implementation of YOLOv3, with support for training, inference and evaluation.
 
-This is a fork of https://github.com/eriklindernoren/PyTorch-YOLOv3 for custom data set for the https://www.kaggle.com/c/global-wheat-detection kaggle competition.
+This is a fork of https://github.com/eriklindernoren/PyTorch-YOLOv3 customized for the https://www.kaggle.com/c/global-wheat-detection kaggle competition.
 
-Note that the README files have been cut down to only include decription for running/testing on the kaggle competitions dataset.
+Note that the README files have been cut down to only include decription for setup, training and testing on the kaggle competitions dataset.
 For full description of the code, I refer the the original https://github.com/eriklindernoren/PyTorch-YOLOv3
 ## Installation
 ##### Clone and install requirements
@@ -14,25 +14,30 @@ For full description of the code, I refer the the original https://github.com/er
 ##### Download pretrained weights
     $ cd weights/
     $ bash download_weights.sh
-    (Not that the default implementation only uses the tiny-weights)
+    (Note that the default implementation only uses the tiny-weights)
     
 #### Download Global_Wheat_Competition
     If you want to use the kaggle API you need to setup username and key.
     This can be done by creating a json file in:    $Home/.kaggle/kaggle.json
     Afterwards, run the comand:
+
     $ chmod 600 $Home/.kagggle/kaggle.json
     
     Once the username and key is set up, run the following command:
+
     $ cd data/WheatDetection/
     $ bash get_Wheat.sh
 
 ## Train/test/detect
-    Training, testing and detection, has all been setup to use the data as setup in the previous step. To run these simply run:
+    Training, testing and detection, has all been setup to use the data as setup in the previous step. 
+    To run these simply run:
+
     $ python train.py
     $ python testing.py
     $ python detection.py
 
-    Note that the train.py as default takes the 50th checkpoint as input. As such, it must run for at least 50 iterations or you should change the weights.
+    Note that the train.py as default takes the 50th checkpoint as input. 
+    As such, it must run for at least 50 iterations or you should change the weights.
     The detection.py takes as default the target images that requiere object detection for the competitions
 
 
