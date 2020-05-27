@@ -77,9 +77,14 @@ if __name__ == "__main__":
     valid_path = data_config["valid"]
     class_names = load_classes(data_config["names"])
 
-    # Initiate model - assumes a checkpoint as input
+    # Initiate model
     model = Darknet(opt.model_def).to(device)
-    model.load_state_dict(torch.load(opt.weights_path))
+    if opt.weights_path.endswith(".weights"):
+        # Load darknet weights
+        model.load_darknet_weights(opt.weights_path)
+    else:
+        # Load checkpoint weights
+        model.load_state_dict(torch.load(opt.weights_path))
 
     print("Compute mAP...")
 
