@@ -3,7 +3,7 @@ import numpy as np
 import re
 from PIL import Image
 import PIL
-
+import os
 
 train_df = pd.read_csv('train.csv')
 train_df['source'] = 0 #Competition is only about detection - so labels does not matter
@@ -88,3 +88,9 @@ for id_ in img_ids:
     img = Image.open(f'images/{id_}.jpg')
     img = img.resize((416,416),Image.ANTIALIAS)
     img.save(f'images/{id_}.jpg')
+
+test_imgs = os.listdir("test/")
+for img_id in test_imgs:
+    img = Image.open(f'test/{img_id}')
+    img = img.resize((416,416),Image.ANTIALIAS)
+    img.save(f'test/{img_id}')
