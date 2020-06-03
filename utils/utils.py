@@ -258,6 +258,9 @@ def non_max_suppression(prediction, conf_thres=0.5, nms_thres=0.4):
             detections[0, :4] = (weights * detections[invalid, :4]).sum(0) / weights.sum()
             keep_boxes += [detections[0]]
             detections = detections[~invalid]
+            #Handle NaN values:
+            nans = torch.isnan(detections)
+            detections[nans] = 0
         if keep_boxes:
             output[image_i] = torch.stack(keep_boxes)
 
