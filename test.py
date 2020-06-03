@@ -61,7 +61,7 @@ if __name__ == "__main__":
     parser.add_argument("--batch_size", type=int, default=8, help="size of each image batch")
     parser.add_argument("--model_def", type=str, default="config/yolov3-Wheat-tiny.cfg", help="path to model definition file")
     parser.add_argument("--data_config", type=str, default="config/Wheat.data", help="path to data config file")
-    parser.add_argument("--weights_path", type=str, default="checkpoints/yolov3_ckpt_50.pth", help="path to weights file")
+    parser.add_argument("--weights_path", type=str, default="checkpoints/tiny-yolo-50.pth", help="path to weights file")
     parser.add_argument("--class_path", type=str, default="data/WheatDetection/classes.names", help="path to class label file")
     parser.add_argument("--iou_thres", type=float, default=0.5, help="iou threshold required to qualify as detected")
     parser.add_argument("--conf_thres", type=float, default=0.5, help="object confidence threshold")
@@ -95,7 +95,7 @@ if __name__ == "__main__":
         conf_thres=opt.conf_thres,
         nms_thres=opt.nms_thres,
         img_size=opt.img_size,
-        batch_size=8,
+        batch_size=opt.batch_size,
     )
 
     print("Average Precisions:")
