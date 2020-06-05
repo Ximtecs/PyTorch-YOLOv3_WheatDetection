@@ -7,7 +7,7 @@ from PIL import Image
 import torch
 import torch.nn.functional as F
 
-from utils.augmentations import horisontal_flip
+from utils.augmentations import horisontal_flip, vertical_flip
 from torch.utils.data import Dataset
 import torchvision.transforms as transforms
 
@@ -126,8 +126,11 @@ class ListDataset(Dataset):
 
         # Apply augmentations
         if self.augment:
-            if np.random.random() < 0.5:
+            rand = np.random.random()
+            if rand < 0.2:
                 img, targets = horisontal_flip(img, targets)
+            elif 0.2 < rand and rand < 0.4:
+                img, targets = vertical_flip(img, targets)
 
         return img_path, img, targets
 
