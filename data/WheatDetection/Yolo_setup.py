@@ -27,6 +27,10 @@ train_df['w'] = train_df['w'].astype(np.float)
 train_df['h'] = train_df['h'].astype(np.float)
 
 
+train_df['area'] = train_df['w'] * train_df['h']
+#remove large and small boxes
+train_df = train_df[train_df['area'] < 100000] # large BBoxes
+train_df = train_df[(train_df['area'] <= 0.0) | (train_df['area'] > 14.0)] # small BBoxes
 
 #translate to center coordinates
 train_df['x'] += + train_df['w'] / 2
