@@ -36,6 +36,7 @@ if __name__ == "__main__":
     parser.add_argument("--evaluation_interval", type=int, default=1, help="interval evaluations on validation set")
     parser.add_argument("--compute_map", default=False, help="if True computes mAP every tenth batch")
     parser.add_argument("--multiscale_training", default=True, help="allow for multi-scale training")
+    parser.add_argument("--optimizer",default="Adam", help="Optimizer (Adam or SGD)")
     opt = parser.parse_args()
     print(opt)
 
@@ -74,7 +75,11 @@ if __name__ == "__main__":
         collate_fn=dataset.collate_fn,
     )
 
-    optimizer = torch.optim.Adam(model.parameters())
+    learning_rate = model.hyperparams['learning_rate']
+    if opt.optimizer == "Adam":
+        optimizer = torch.optim.Adam(model.parameters(),lr=float(learning_rate))
+    else:
+        optimizer = torch.optim.SGD(model.parameters(),lr=float(learning_rate))
 
     metrics = [
         "grid_size",
@@ -138,7 +143,7 @@ if __name__ == "__main__":
 
             log_str += AsciiTable(metric_table).table
             log_str += f"\nTotal loss {loss.item()}"
-            tot_loss = loss.item()
+            tot_loss += loss.item()
 
             # Determine approximate time left for epoch
             epoch_batches_left = len(dataloader) - (batch_i + 1)
@@ -175,9 +180,10 @@ if __name__ == "__main__":
                 ap_table += [[c, class_names[c], "%.5f" % AP[i]]]
             print(AsciiTable(ap_table).table)
             print(f"---- mAP {AP.mean()}")
-            print(f'Total loss: {tot_loss}')
+            avg_loss = tot_loss / len(dataloader)
+            print(f'Total loss: {avg_loss}')
             f = open('logs/scores.txt','a')
-            f.write(f'{epoch}\t{AP.mean()}\t{tot_loss}\n')
+            f.write(f'{epoch}\t{AP.mean()}\t{avg_loss}\n')
             f.close()
 
         if epoch % opt.checkpoint_interval == 0:
