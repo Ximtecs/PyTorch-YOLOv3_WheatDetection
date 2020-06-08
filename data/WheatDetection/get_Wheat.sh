@@ -1,4 +1,4 @@
-rm -r images/ labels/ train.csv sample_submission.csv train.txt valid.txt
+rm -rf images/ labels/ train.csv sample_submission.csv train.txt valid.txt
 kaggle competitions download global-wheat-detection
 unzip global-wheat-detection.zip
 rm global-wheat-detection.zip
