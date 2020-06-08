@@ -62,6 +62,8 @@ augmentation = A.Compose([
 def augment_img(image_id, i):
     img = Image.open(f'images/{id_}.jpg')
     img = img.resize((416,416),Image.ANTIALIAS)
+
+    #TODO - x_max and y_max should be changed 
     bboxes = train_df[train_df['image_id'] == image_id][['x_min', 'y_min', 'x_max', 'y_max']].astype(np.int32).values
     source = train_df[train_df['image_id'] == image_id]['source'].unique()[0]
     labels = np.ones((len(bboxes), ))  # as we have only one class (wheat heads)
