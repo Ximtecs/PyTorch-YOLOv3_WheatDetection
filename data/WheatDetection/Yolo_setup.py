@@ -53,17 +53,15 @@ tot_imgs = sum(p)
 
 img_per_class = 1250
 
-augmentation = A.Compose([
-        A.Resize(512, 512),   # Resize the given 1024 x 1024 image to 512 * 512           
+augmentation = A.Compose([          
         A.VerticalFlip(p=0.60),     # Verticlly flip the image
         A.RandomBrightnessContrast(brightness_limit=0.3, contrast_limit=0.3, p=0.60), # brightness
         A.HueSaturationValue(p=0.60, hue_shift_limit=20, sat_shift_limit=30, val_shift_limit=50) # HUE
     ], bbox_params={'format': 'pascal_voc', 'label_fields': ['labels']})
 
 def augment_img(image_id, i):
-    #TODO Change to using PIL
-    image = cv2.imread(os.path.join(BASE_DIR, 'train', f'{image_id}.jpg'), cv2.IMREAD_COLOR)
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    img = Image.open(f'images/{id_}.jpg')
+    img = img.resize((416,416),Image.ANTIALIAS)
     bboxes = train_df[train_df['image_id'] == image_id][['x_min', 'y_min', 'x_max', 'y_max']].astype(np.int32).values
     source = train_df[train_df['image_id'] == image_id]['source'].unique()[0]
     labels = np.ones((len(bboxes), ))  # as we have only one class (wheat heads)
@@ -72,17 +70,30 @@ def augment_img(image_id, i):
     aug_bboxes = aug_result['bboxes']
 
     #Save augmented image
-    Image.fromarray(aug_image).save(os.path.join(WORK_DIR, 'train', f'{image_id}_aug_{i}.jpg'))
+    img.save(f'images/{image_id}_aug_{i}.jpg')
+    #Image.fromarray(aug_image).save(os.path.join(WORK_DIR, 'train', f'{image_id}_aug_{i}.jpg'))
     #Save labels:
     #TODO Save lavels
+    file = open(f'labels/{image_id}_aug_{i}.txt','w')
+    for i in range(len(boxes)):
+        string = ""
+        string += str(0) + " " #just detect - no classification
+        string += str(boxes[i,0])+ " "
+        string += str(boxes[i,1])+ " "
+        string += str(boxes[i,2])+ " "
+        string += str(boxes[i,3])
+        string += "\n"
+        file.write(string)
+    file.close()
+
 
     image_metadata = []
     for bbox in aug_bboxes:
         bbox = tuple(map(int, bbox))
         image_metadata.append({
             'image_id': f'{image_id}_aug_{i}',
-            'width': 512, #416
-            'height': 512, #416
+            'width': 416, #416
+            'height': 416, #416
             'x_min': bbox[0],
             'y_min': bbox[1],
             'x_max': bbox[2],
