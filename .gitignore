@@ -13,6 +13,8 @@ data/WheatDetection/train.csv
 data/WheatDetection/train.txt
 data/WheatDetection/valid.txt
 data/WheatDetection/sample_submission.csv
+experiments/tiny_parameters/**
+logs/
 backup
 weights/*.weights
 weights/*.74
