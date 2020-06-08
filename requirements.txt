@@ -9,3 +9,4 @@ pillow
 tqdm
 kaggle
 pandas
+albumentations
