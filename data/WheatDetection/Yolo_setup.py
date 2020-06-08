@@ -6,8 +6,8 @@ import PIL
 import os
 
 train_df = pd.read_csv('train.csv')
-train_df['source'] = 0 #Competition is only about detection - so labels does not matter
-
+#train_df['source'] = 0 #Competition is only about detection - so labels does not matter
+#TODO ['source] should be set to 0 after augmentations
 
 #expand the bbox to 4 different columns
 train_df['x'] = -1
@@ -41,6 +41,82 @@ train_df['x'] /= train_df['width']
 train_df['y'] /= train_df['height']
 train_df['w'] /= train_df['width']
 train_df['h'] /= train_df['height']
+
+
+
+#------------------------------------ AUGMENTATIONS -----------------
+
+#number of images per class
+class_names =  train_df['source'].unique()
+p = train_df.groupby('source')['image_id'].nunique()
+tot_imgs = sum(p)
+
+img_per_class = 1250
+
+augmentation = A.Compose([
+        A.Resize(512, 512),   # Resize the given 1024 x 1024 image to 512 * 512           
+        A.VerticalFlip(p=0.60),     # Verticlly flip the image
+        A.RandomBrightnessContrast(brightness_limit=0.3, contrast_limit=0.3, p=0.60), # brightness
+        A.HueSaturationValue(p=0.60, hue_shift_limit=20, sat_shift_limit=30, val_shift_limit=50) # HUE
+    ], bbox_params={'format': 'pascal_voc', 'label_fields': ['labels']})
+
+def augment_img(image_id, i):
+    #TODO Change to using PIL
+    image = cv2.imread(os.path.join(BASE_DIR, 'train', f'{image_id}.jpg'), cv2.IMREAD_COLOR)
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    bboxes = train_df[train_df['image_id'] == image_id][['x_min', 'y_min', 'x_max', 'y_max']].astype(np.int32).values
+    source = train_df[train_df['image_id'] == image_id]['source'].unique()[0]
+    labels = np.ones((len(bboxes), ))  # as we have only one class (wheat heads)
+    aug_result = augmentation(image=image, bboxes=bboxes, labels=labels)
+    aug_image = aug_result['image']
+    aug_bboxes = aug_result['bboxes']
+
+    #Save augmented image
+    Image.fromarray(aug_image).save(os.path.join(WORK_DIR, 'train', f'{image_id}_aug_{i}.jpg'))
+    #Save labels:
+    #TODO Save lavels
+
+    image_metadata = []
+    for bbox in aug_bboxes:
+        bbox = tuple(map(int, bbox))
+        image_metadata.append({
+            'image_id': f'{image_id}_aug_{i}',
+            'width': 512, #416
+            'height': 512, #416
+            'x_min': bbox[0],
+            'y_min': bbox[1],
+            'x_max': bbox[2],
+            'y_max': bbox[3],
+            'w': bbox[2] - bbox[0],
+            'h': bbox[3] - bbox[1],
+            'area': (bbox[2] - bbox[0]) * (bbox[3] - bbox[1]),
+            'source': source
+        })
+    return image_metadata
+
+
+
+augmented_imgs = []
+for name in class_names:
+    class_ids = train_df.groupby('source').get_group(name)
+    no_class_imgs  = p[name]
+
+    if no_class_imgs > 600:
+        no_aug = img_per_class - no_class_imgs
+        df_class_idx = class_ids.sample(n=no_aug, replace=True)
+        img_ids = image_ids = df_class_idx['image_id'].unique()
+    else:
+        img_ids = class_ids['image_id'].unique()
+    nr_iterations = img_per_class // no_class_imgs
+    i = 0
+    while i < nr_iterations:
+        for img_id in img_ids:
+            augmented_imgs.append(augment_img(img_id,i))
+        i += 1
+
+augment_df = pd.DataFrame(augmented_imgs)
+
+#--------------------------------------------------------------------
 
 
 #pick training and validation set randomly
