@@ -25,10 +25,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--image_folder", type=str, default="data/samples/test", help="path to dataset")
     parser.add_argument("--model_def", type=str, default="config/yolov3-Wheat-tiny.cfg", help="path to model definition file")
-    parser.add_argument("--weights_path", type=str, default="checkpoints/yolov3_ckpt_50.pth", help="path to weights file")
+    parser.add_argument("--weights_path", type=str, default="checkpoints/yolov3_ckpt_30.pth", help="path to weights file")
     parser.add_argument("--class_path", type=str, default="data/WheatDetection/classes.names", help="path to class label file")
-    parser.add_argument("--conf_thres", type=float, default=0.8, help="object confidence threshold")
-    parser.add_argument("--nms_thres", type=float, default=0.2, help="iou thresshold for non-maximum suppression")
+    parser.add_argument("--conf_thres", type=float, default=0.5, help="object confidence threshold")
+    parser.add_argument("--nms_thres", type=float, default=0.5, help="iou thresshold for non-maximum suppression")
     parser.add_argument("--batch_size", type=int, default=1, help="size of the batches")
     parser.add_argument("--n_cpu", type=int, default=0, help="number of cpu threads to use during batch generation")
     parser.add_argument("--img_size", type=int, default=416, help="size of each image dimension")
@@ -128,7 +128,7 @@ if __name__ == "__main__":
                     plt.text(
                         x1,
                         y1,
-                        s=classes[int(cls_pred)],
+                        s="",#classes[int(cls_pred)],
                         color="white",
                         verticalalignment="top",
                         bbox={"color": color, "pad": 0},
